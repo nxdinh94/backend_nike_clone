@@ -3,7 +3,7 @@ import usersRoute from './routes/users.routes';
 import { defaultErrorHandler } from './middlewares/errors.middlewars';
 import {dataSource} from '~/dataSource'
 const app = express()
-const port = 3000
+const port = 3111
 app.use(express.json())
 
 dataSource.initialize().then(() => {
@@ -16,5 +16,5 @@ app.use('/users', usersRoute)
 
 app.use(defaultErrorHandler)
 app.listen(port, () =>{
-    console.log('Listening on http://localhost:3000');
+    console.log(`Listening on http://localhost:${port}`);
 }) 

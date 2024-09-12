@@ -2,11 +2,50 @@ import { body, check } from 'express-validator';
 import { Request, Response } from 'express';
 import { validate } from "~/util/validate";
 import { verifyToken } from '~/util/jwt';
+import { ErrorWithStatus } from '~/models/Errors';
+import { USERS_MESSAGES } from '~/constants/messages';
+import HTTP_STATUS from '~/constants/httpStatus';
+import { dataSource } from '~/dataSource';
+import { Users } from '~/models/entity/users';
 
 export const loginValidator = validate([
     body('email').isEmail().withMessage('Invalid email format'),
     body('password').isLength({ min: 6 }).withMessage('Password must be at least 6 characters'),
 ])
+
+
+
+export const registerValidator = validate([
+  body('email').isEmail().withMessage('Invalid email format').custom(async(value)=>{
+    const firstUser = await dataSource
+      .getRepository(Users)
+      .createQueryBuilder("user")
+      .where("user.email = :email", { email: value})
+      .getOne()
+    if(firstUser){
+      throw new ErrorWithStatus({
+        message : USERS_MESSAGES.USER_EXISTED,
+        status : HTTP_STATUS.NOT_FOUND
+      })
+    }
+  }),
+  body('name').trim().notEmpty().withMessage(USERS_MESSAGES.NAME_IS_REQUIRED).custom(async(value: string)=>{
+    if(value.length < 6){
+      throw new ErrorWithStatus({
+        message: USERS_MESSAGES.NAME_LENGTH_MUST_BE_GREATER_THAN_5,
+        status : HTTP_STATUS.NOT_FOUND
+      })    
+    }
+  }),
+  body('password').isStrongPassword({
+      minLength: 6,
+      minLowercase : 1,
+      minUppercase : 1,
+      minNumbers: 1,
+      minSymbols: 1,
+    }).withMessage(USERS_MESSAGES.PASSWORD_MUST_BE_STRONG)
+])
+
 
 export const accessTokenValidator = validate([
     check('Authorization')
@@ -29,5 +68,17 @@ export const accessTokenValidator = validate([
 
       return true; // Token exists and follows the Bearer pattern
     }),
+])
+
+export const refreshTokenValidator = validate([
+  body('refresh_token').custom(async(value)=>{
+    if(!value){
+      throw new ErrorWithStatus({
+        message : USERS_MESSAGES.REFRESH_TOKEN_IS_REQUIRED,
+        status:  HTTP_STATUS.UNAUTHORIZED
+      })
+    }
+    console.log('refresh token');
+  })
 ])
 

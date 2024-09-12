@@ -1,4 +1,4 @@
-export const USERS_MESSAGES = {
+export const    USERS_MESSAGES = {
     VALIDATION_ERROR: 'Validation error',
     EMAIL_ALREADY_EXIST: 'Email already exists',
     EMAIL_IS_INVALID: 'Email is invalid',
@@ -6,7 +6,7 @@ export const USERS_MESSAGES = {
     USER_NOT_FOUND:'User not found',
     NAME_IS_REQUIRED : 'Name is required',
     NAME_MUST_BE_STRING: 'Name must be a string',
-    NAME_LENGTH_MUST_BE_FROM_1_TO_100: 'Name length must be from 1 to 100',
+    NAME_LENGTH_MUST_BE_GREATER_THAN_5: 'Name length must be greater than 5',
     PASSWORD_IS_REQUIRED : 'Password is required',
     PASSWORD_MUST_BE_A_STRING: 'Password must be a string',
     PASSWORD_LENGTH_MUST_BE_FROM_6_TO_50: 'Password length must be from 6 to 50',
@@ -47,7 +47,7 @@ export const USERS_MESSAGES = {
     WEBSITE_MUST_BE_STRING: 'Website must be string',
     WEBSITE_LENGTH_MUST_BE_FROM_1_TO_200: 'Website length must be from 1 to 200',
     USERNAME_MUST_BE_STRING: 'Username must be string',
-    USERNAME_EXISTED: 'Username existed',
+    USER_EXISTED: 'User existed',
     USERNAME_IS_INVALID: 'Username must be 4-15 characters long and contain only lettes, numbers, underscores, not only numbers',
     USERNAME_LENGTH_MUST_BE_FROM_1_TO_50: 'Username length must be from 1 to 50',
     AVATAR_MUST_BE_STRING: 'Avatar must be string',

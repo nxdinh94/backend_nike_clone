@@ -2,6 +2,7 @@ import { TokenType, UserVerifyStatus } from '~/constants/enum';
 import { dataSource } from '~/dataSource';
 import { RefreshToken } from '~/models/entity/refreshToken';
 import { Users } from '~/models/entity/users';
+import { hashPassword } from '~/util/crypto';
 import { signToken } from '~/util/jwt';
 class UserServices{
     
@@ -75,13 +76,13 @@ class UserServices{
         if(firstUser != null){
             newUserId = firstUser.id as number + 2
         }
-    
+        const hashedPassword =  hashPassword(password)
         await dataSource
         .createQueryBuilder()
         .insert()
         .into(Users)
         .values([
-            { id: newUserId,  email, password, name, role },
+            { id: newUserId,  email, password: hashedPassword, name, role },
         ]).execute()
 
         const [access_token, refresh_token] = await this.signAccessAndRefreshToken({

@@ -33,6 +33,9 @@ export const registerController =async (req: Request<ParamsDictionary, any, Regi
         result
     });
 }
+export const logoutController =async (req: Request<ParamsDictionary, any, RegisterReqBody>, res: Response, next: NextFunction) =>{
+    
+}
 export const genAccessTokenController =async (req: Request<ParamsDictionary, any, RegisterReqBody>, res: Response, next: NextFunction) =>{
     var now = Math.floor(Date.now() / 1000);
     //expire after one hour
