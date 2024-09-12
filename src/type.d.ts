@@ -8,6 +8,6 @@ declare module 'express-serve-static-core' {
         userId: number;
         user : Users;
         decoded_authorization?: TokenPayload
-        
+        decoded_refresh_token? : TokenPayload
     }
 }

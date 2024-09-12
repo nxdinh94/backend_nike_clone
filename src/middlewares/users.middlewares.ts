@@ -7,10 +7,11 @@ import { USERS_MESSAGES } from '~/constants/messages';
 import HTTP_STATUS from '~/constants/httpStatus';
 import { dataSource } from '~/dataSource';
 import { Users } from '~/models/entity/users';
+import { RefreshToken } from '~/models/entity/refreshToken';
 
 export const loginValidator = validate([
     body('email').isEmail().withMessage('Invalid email format'),
-    body('password').isLength({ min: 6 }).withMessage('Password must be at least 6 characters'),
+    body('password').notEmpty().withMessage(USERS_MESSAGES.PASSWORD_IS_REQUIRED),
 ])
 
 
@@ -28,6 +29,7 @@ export const registerValidator = validate([
         status : HTTP_STATUS.NOT_FOUND
       })
     }
+    return true;
   }),
   body('name').trim().notEmpty().withMessage(USERS_MESSAGES.NAME_IS_REQUIRED).custom(async(value: string)=>{
     if(value.length < 6){
@@ -36,6 +38,7 @@ export const registerValidator = validate([
         status : HTTP_STATUS.NOT_FOUND
       })    
     }
+    return true;
   }),
   body('password').isStrongPassword({
       minLength: 6,
@@ -71,14 +74,25 @@ export const accessTokenValidator = validate([
 ])
 
 export const refreshTokenValidator = validate([
-  body('refresh_token').custom(async(value)=>{
+  body('refresh_token').custom(async(value: string, {req})=>{
     if(!value){
       throw new ErrorWithStatus({
         message : USERS_MESSAGES.REFRESH_TOKEN_IS_REQUIRED,
         status:  HTTP_STATUS.UNAUTHORIZED
       })
     }
-    console.log('refresh token');
+    const [decoded_refresh_token, refresh_token] = await Promise.all([
+      verifyToken({token: value, privateKey: process.env.JWT_SECRET_REFRESH_TOKEN as string}),
+      dataSource.getRepository(RefreshToken).createQueryBuilder('refresh_token').where("refresh_token.token = :token", {token: value}).getOne()
+    ])
+    if(refresh_token === null){
+        throw new ErrorWithStatus({
+            message : USERS_MESSAGES.USED_REFRESH_TOKEN_OR_NOT_EXISTS,
+            status : HTTP_STATUS.UNAUTHORIZED
+        })
+    }
+    (req as Request).decoded_refresh_token = decoded_refresh_token
+    return true;
   })
 ])
 

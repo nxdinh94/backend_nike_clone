@@ -3,8 +3,9 @@ import { ParamsDictionary } from 'express-serve-static-core';
 import { omit } from "lodash";
 import { USERS_MESSAGES } from "~/constants/messages";
 import { Users } from "~/models/entity/users";
-import { LoginReqBody, RegisterReqBody } from "~/requests/Users.requests";
+import { LoginReqBody, LogoutReqBody, RegisterReqBody } from "~/requests/Users.requests";
 import userServices from "~/services/users.services";
+import { hashPassword } from "~/util/crypto";
 import { formatName } from "~/util/formatName";
 
 
@@ -12,7 +13,8 @@ import { formatName } from "~/util/formatName";
 export const loginController =async (req: Request<ParamsDictionary, any, LoginReqBody>, res: Response, next: NextFunction) =>{
     const email = req.body.email
     const password = req.body.password
-    const result = await userServices.loginService({email, password})
+    const decodePassword = hashPassword(password)
+    const result = await userServices.loginService({email, password: decodePassword})
     if (typeof result === 'string') {
         return res.status(401).json({ message: result });
     }
@@ -33,8 +35,10 @@ export const registerController =async (req: Request<ParamsDictionary, any, Regi
         result
     });
 }
-export const logoutController =async (req: Request<ParamsDictionary, any, RegisterReqBody>, res: Response, next: NextFunction) =>{
-    
+export const logoutController =async (req: Request<ParamsDictionary, any, LogoutReqBody>, res: Response, next: NextFunction) =>{
+    const {refresh_token} = req.body
+    const result = await userServices.logout(refresh_token)
+    return res.json(result)
 }
 export const genAccessTokenController =async (req: Request<ParamsDictionary, any, RegisterReqBody>, res: Response, next: NextFunction) =>{
     var now = Math.floor(Date.now() / 1000);

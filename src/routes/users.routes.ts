@@ -17,9 +17,7 @@ usersRouters.post('/register', registerValidator,wrapRequestHandler(registerCont
 
 
 usersRouters.get('/stringee/gen-access-token', accessTokenValidator,wrapRequestHandler(genAccessTokenController));
-usersRouters.post('/logout ',()=>{
-    console.log('dfdf');
-});
+usersRouters.post('/logout', refreshTokenValidator, wrapRequestHandler(logoutController));
 
 
 export default usersRouters

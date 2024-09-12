@@ -96,9 +96,12 @@ class UserServices{
         ]).execute()
 
         return {access_token, refresh_token}
-
-
-
+    }
+    async logout(refresh_token: string){
+        const result  = await dataSource.createQueryBuilder().delete().from(RefreshToken).where("token = :token", {token: refresh_token}).execute();
+        return {
+            message: 'Logout successfully'
+        }
     }
     
 }   
