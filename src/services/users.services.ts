@@ -1,4 +1,5 @@
 import { TokenType, UserVerifyStatus } from '~/constants/enum';
+import { USERS_MESSAGES } from '~/constants/messages';
 import { dataSource } from '~/dataSource';
 import { RefreshToken } from '~/models/entity/refreshToken';
 import { Users } from '~/models/entity/users';
@@ -100,7 +101,7 @@ class UserServices{
     async logout(refresh_token: string){
         const result  = await dataSource.createQueryBuilder().delete().from(RefreshToken).where("token = :token", {token: refresh_token}).execute();
         return {
-            message: 'Logout successfully'
+            message: USERS_MESSAGES.LOGGIN_SUCCESS
         }
     }
     

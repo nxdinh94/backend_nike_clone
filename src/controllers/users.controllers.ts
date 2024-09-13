@@ -50,7 +50,7 @@ export const genAccessTokenController =async (req: Request<ParamsDictionary, any
 		jti: process.env.API_SID_KEY + "-" + now,
 		iss: process.env.API_SID_KEY,
 		exp: exp,
-		userId: formatName(req.decoded_authorization.user_name),
+		userId: formatName(`${req.decoded_authorization.user_name}${req.decoded_authorization.user_id}`),
 	};
 	var jwt = require('jsonwebtoken');
 	var token = await jwt.sign(payload, process.env.API_SECRET_KEY, {algorithm: 'HS256', header: header})
