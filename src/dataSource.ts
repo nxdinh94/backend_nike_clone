@@ -10,7 +10,7 @@ export const dataSource = new DataSource({
     username: `${process.env.DB_USER_NAME}`,
     password: `${process.env.DB_PASSWORD}`,
     database: `${process.env.DB_NAME}`,
-    synchronize: false, 
+    synchronize: true, 
     logging: false,
     entities: ["src/models/entity/**/*.ts"],
     subscribers: [],

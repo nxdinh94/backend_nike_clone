@@ -1,7 +1,10 @@
-import{ Entity, PrimaryColumn, Column } from "typeorm";
+import{ Entity, PrimaryColumn, Column, OneToMany, OneToOne } from "typeorm";
+import { CartItems } from "./cartItem";
+import { Orders } from "./order";
+import { CreatedUpdated } from "~/common/entity/createdUpdated";
 
 @Entity()
-export class Users {
+export class Users extends CreatedUpdated{
   @PrimaryColumn()
   id?: number;
 
@@ -16,6 +19,28 @@ export class Users {
 
   @Column({ default: 0 })
   role?: number;
+
+  @Column({ default: '', type: 'text'})
+  bio?: string;
+
+  @Column({ type: Date , nullable: true})
+  dob?: Date;
+
+  @Column({ nullable: true, length: 255})
+  country?: string;
+
+  @Column({ nullable: true, length: 255  })
+  shiping_address?: string;
+
+  @Column({ nullable: true, length: 255 })
+  payment_info?: string;
+
+  @Column({ default: 'English', length: 50})
+  language?: string;
+
+  @OneToMany(() => Orders, (orders) => orders.userId)
+  orderId?: Orders[];
+
 }
 
 

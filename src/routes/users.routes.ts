@@ -12,7 +12,7 @@ import {
 const usersRouters = express.Router()
 
 usersRouters.post('/login' , loginValidator, wrapRequestHandler(loginController));
-usersRouters.post('/register', registerValidator,wrapRequestHandler(registerController));
+usersRouters.post('/register', registerValidator, wrapRequestHandler(registerController));
 
 
 

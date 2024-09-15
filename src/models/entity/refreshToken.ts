@@ -1,8 +1,9 @@
 
 import { Entity, PrimaryGeneratedColumn, Column, OneToOne, JoinColumn, CreateDateColumn } from "typeorm"
 import { Users } from "./users"
+import { CreatedUpdated } from "~/common/entity/createdUpdated"
 @Entity()
-export class RefreshToken{
+export class RefreshToken extends CreatedUpdated{
     @PrimaryGeneratedColumn()
     id?: number
 
@@ -13,6 +14,6 @@ export class RefreshToken{
     createdAt?: Date
 
     @OneToOne(()=>Users)
-    @JoinColumn()
-    user?: Users
+    @JoinColumn({name: 'userId'})
+    userId?: Users
 }
