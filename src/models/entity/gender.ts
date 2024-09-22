@@ -3,13 +3,13 @@ import { Products } from './products'
 import { CreatedUpdated } from '~/common/entity/createdUpdated'
 
 @Entity()
-export class KindOfPeople extends CreatedUpdated{
+export class Genders extends CreatedUpdated {
   @PrimaryGeneratedColumn()
   id?: number
 
-  @Column({ length: 100 })
+  @Column({ length: 100, unique: true })
   name?: string
 
-  @OneToMany(() => Products, (product) => product.kindOfPeopleId)
-  productId?: Products[]
+  @OneToMany(() => Products, (product) => product.gender)
+  product?: Products[]
 }

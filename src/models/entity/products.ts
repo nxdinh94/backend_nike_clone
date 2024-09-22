@@ -1,53 +1,60 @@
-import { Column, Entity, JoinColumn, ManyToOne, OneToMany, PrimaryGeneratedColumn } from 'typeorm'
+import { Column, Entity, JoinColumn, ManyToOne, OneToMany, OneToOne, PrimaryGeneratedColumn } from 'typeorm'
 import { CartItems } from './cartItem'
-import { KindOfPeople } from './kindOfPeople'
+import { Genders } from './gender'
 import { ProductStyle } from './productStyle'
 import { ProductSize } from './productSize'
 import { OrderDetail } from './orderDetail'
 import { CreatedUpdated } from '~/common/entity/createdUpdated'
+import { Reviews } from './reviews'
+import { Color } from './color'
+import { Collections } from './collection'
+import { ProductImages } from './product_images'
+import { Brand } from './brand'
 
 @Entity()
-export class Products extends CreatedUpdated{
+export class Products extends CreatedUpdated {
   @PrimaryGeneratedColumn()
   id?: number
 
   @Column()
   name?: string
 
-  @Column()
+  @Column({ nullable: true, default: '' })
   subtitle?: string
 
   @Column({ type: 'float' })
   price?: number
 
-  @Column({ type: 'boolean', default: false })
-  favourite?: boolean
+  @Column({ type: 'boolean', nullable: true, default: false })
+  isFavourite?: boolean
 
-  @Column({ type: 'simple-array' })
-  image_url?: string[]
 
-  @Column({ type: 'text' })
+
+  @Column('text', { array: true, nullable: true })
+  howItMade?: string[]
+
+  @Column({ type: 'text', nullable: true, default: '' })
   description?: string
 
-  @Column()
+  @Column({ nullable: true, default: '' })
   material?: string
 
-  @Column()
-  color?: number
+  @Column({ nullable: true, default: '' })
+  colorDescription?: string
 
-  @Column()
-  style_code?: string
+  @Column({ nullable: true, default: '' })
+  styleCode?: string
 
-  @Column()
+  @Column({ nullable: true, default: '' })
   country?: string
 
-  @Column({ type: 'boolean', default: 0 })
+  @Column({ type: 'boolean', default: false, select: false })
   isProductOfWeek?: boolean
 
-  @Column({ type: 'boolean', default: 0 })
+  @Column({ type: 'boolean', default: false, select: false })
   isNewArrivals?: boolean
 
-  @Column({ type: 'boolean', default: 0 })
+  @Column({ type: 'boolean', default: false, select: false })
   isOnSales?: boolean
 
   @OneToMany(() => CartItems, (cartItems) => cartItems.productId)
@@ -56,15 +63,33 @@ export class Products extends CreatedUpdated{
   @OneToMany(() => OrderDetail, (orderDetail) => orderDetail.productId)
   orderDetailId?: OrderDetail[]
 
-  @ManyToOne(() => KindOfPeople, (kindOfPeople) => kindOfPeople.productId)
-  @JoinColumn({ name: 'kindOfPeopleId' })
-  kindOfPeopleId?: KindOfPeople
+  @ManyToOne(() => Color, (color) => color.product)
+  @JoinColumn({ name: 'colorId' })
+  color?: Color
 
-  @ManyToOne(() => ProductStyle, (productStyle) => productStyle.productId)
-  @JoinColumn({ name: 'productStyleId' })
-  productStyleId?: ProductStyle
+  @ManyToOne(() => Collections, (collection) => collection.product)
+  @JoinColumn({ name: 'collectionId' })
+  collection?: Collections
 
-  @ManyToOne(() => ProductSize, (productSize) => productSize.productId)
-  @JoinColumn({ name: 'productSizeId' })
-  productSizeId?: ProductSize
+  // @Column('text', { array: true })
+  @OneToMany(() => ProductImages, (productImage) => productImage.product)
+  image?: ProductImages[]
+
+  @ManyToOne(() => Genders, (gender) => gender.product)
+  @JoinColumn({ name: 'genderId' })
+  gender?: Genders
+
+  @ManyToOne(() => Brand, (brand) => brand.product)
+  @JoinColumn({ name: 'brandId' })
+  brand?: Brand
+
+  @ManyToOne(() => ProductStyle, (productStyle) => productStyle.product)
+  @JoinColumn({ name: 'styleId' })
+  style?: ProductStyle
+
+  @OneToMany(() => ProductSize, (productSize) => productSize.productId)
+  productSizeId?: ProductSize[]
+
+  @OneToMany(() => Reviews, (review) => review.productId)
+  reviewId?: Reviews[]
 }

@@ -2,6 +2,7 @@ import{ Entity, PrimaryColumn, Column, OneToMany, OneToOne } from "typeorm";
 import { CartItems } from "./cartItem";
 import { Orders } from "./order";
 import { CreatedUpdated } from "~/common/entity/createdUpdated";
+import { Reviews } from "./reviews";
 
 @Entity()
 export class Users extends CreatedUpdated{
@@ -40,6 +41,9 @@ export class Users extends CreatedUpdated{
 
   @OneToMany(() => Orders, (orders) => orders.userId)
   orderId?: Orders[];
+
+  @OneToMany(()=> Reviews, (review)=>review.userId )
+  reviewId?: Reviews[];
 
 }
 

@@ -8,3 +8,8 @@
 # this migration load into the database.
 # The last migration means that the migration is the lowest field in the database
 #
+
+// Create an column type array of strings
+# @Column('text', { array: true , nullable: true})
+# howItMade?: string[]
+
