@@ -1,13 +1,12 @@
-import { registerValidator } from './../middlewares/users.middlewares';
 import express from 'express';
-import { accessTokenValidator, loginValidator, refreshTokenValidator } from '../middlewares/users.middlewares';
-import { wrapRequestHandler } from './../util/handler';
 import {
-    genAccessTokenController,
     loginController,
     logoutController,
     registerController
 } from '~/controllers/users.controllers';
+import { accessTokenValidator, loginValidator, refreshTokenValidator } from '../middlewares/users.middlewares';
+import { registerValidator } from './../middlewares/users.middlewares';
+import { wrapRequestHandler } from './../util/handler';
 
 const usersRouters = express.Router()
 
@@ -15,9 +14,7 @@ usersRouters.post('/login' , loginValidator, wrapRequestHandler(loginController)
 usersRouters.post('/register', registerValidator, wrapRequestHandler(registerController));
 
 
-
-usersRouters.get('/stringee/gen-access-token', accessTokenValidator,wrapRequestHandler(genAccessTokenController));
-usersRouters.post('/logout', refreshTokenValidator, wrapRequestHandler(logoutController));
+usersRouters.post('/logout', refreshTokenValidator, accessTokenValidator, wrapRequestHandler(logoutController));
 
 
 export default usersRouters

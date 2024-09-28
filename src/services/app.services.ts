@@ -26,7 +26,6 @@ class AppServices {
 
     //convert product.imageId to an array of [Image]
     const transformImageData = productsList.map((product: Products) => {
-      console.log(product.image)
       return {
         ...product,
         gender: product.gender?.name,
