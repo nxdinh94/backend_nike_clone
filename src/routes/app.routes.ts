@@ -14,3 +14,4 @@ const appRouter = Router()
 appRouter.get('/products', wrapRequestHandler(getProductController))
 
 export default appRouter
+    

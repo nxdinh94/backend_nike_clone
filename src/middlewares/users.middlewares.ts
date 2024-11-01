@@ -70,12 +70,14 @@ export const accessTokenValidator = validate([
     .exists()
     .withMessage('Authorization header is required')
     .custom(async (value, { req }) => {
+      console.log('access', value)
       // Split the Authorization header and check if it starts with "Bearer"
       if (!value || !value.startsWith('Bearer ')) {
         throw new Error('Invalid authorization format. Must use Bearer token.')
       }
       // Extract the token from the Bearer string
       const access_token = value.split(' ')[1]
+
       if (!access_token) {
         throw new Error('Bearer token missing.')
       }
@@ -92,7 +94,7 @@ export const accessTokenValidator = validate([
 ])
 
 export const refreshTokenValidator = validate([
-  body('refresh_token').custom(async (value: string, { req }) => {
+  body('refreshToken').custom(async (value: string, { req }) => {
     if (!value) {
       throw new ErrorWithStatus({
         message: USERS_MESSAGES.REFRESH_TOKEN_IS_REQUIRED,
@@ -107,7 +109,6 @@ export const refreshTokenValidator = validate([
         .where('refresh_token.token = :token', { token: value })
         .getOne()
     ])
-    console.log(refresh_token)
     if (refresh_token === null) {
       throw new ErrorWithStatus({
         message: USERS_MESSAGES.USED_REFRESH_TOKEN_OR_NOT_EXISTS,

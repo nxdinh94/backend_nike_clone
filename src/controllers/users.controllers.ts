@@ -16,11 +16,14 @@ export const loginController = async (
   const { email, id } = req.user as Users
 
   if (email != null && id != null) {
-    const result = await userServices.loginService({ id: id.toString(), email })
+    const result: { refresh_token: string; access_token: string } = await userServices.loginService({
+      id: id.toString(),
+      email
+    })
 
     return res.json({
-      message: USERS_MESSAGES.LOGGIN_SUCCESS,
-      result
+      refreshToken: result.refresh_token,
+      accessToken: result.access_token
     })
   }
 }
@@ -29,12 +32,10 @@ export const registerController = async (
   res: Response,
   next: NextFunction
 ) => {
-  console.log('dfdf')
-  const { email, password, country } = req.body
-  const result = await userServices.registerService({ email, password, country })
+  const { email, password, country, dob, name } = req.body
+  const { message } = await userServices.registerService({ email, password, country, dob, name })
   return res.json({
-    message: USERS_MESSAGES.REGISTER_SUCCESS,
-    result
+    message
   })
 }
 export const logoutController = async (
@@ -42,9 +43,9 @@ export const logoutController = async (
   res: Response,
   next: NextFunction
 ) => {
-  const { refresh_token } = req.body
+  const { refreshToken } = req.body
   const { id } = req.decoded_authorization
 
-  const result = await userServices.logout(refresh_token, id)
+  const result = await userServices.logout(refreshToken, id)
   return res.json(result)
 }

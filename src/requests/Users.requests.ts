@@ -9,9 +9,11 @@ export interface RegisterReqBody {
   email: string
   password: string
   country: string
+  name: string
+  dob: string
 }
 export interface LogoutReqBody {
-  refresh_token: string
+  refreshToken: string
 }
 export interface TokenPayload extends JwtPayload {
   userId: string

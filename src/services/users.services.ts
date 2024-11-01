@@ -61,7 +61,7 @@ class UserServices {
 
     return { access_token, refresh_token }
   }
-  async registerService({ email, password, country }: { email: string; password: string; country: string }) {
+  async registerService({ email, password, country, name, dob }: { email: string; password: string; country: string, name:string, dob: string }) {
     const firstUser = await dataSource
       .getRepository(Users)
       .createQueryBuilder('users')
@@ -78,23 +78,12 @@ class UserServices {
       .createQueryBuilder()
       .insert()
       .into(Users)
-      .values([{ id: newUserId, email, password: hashedPassword, country }])
+      .values([{ id: newUserId, email, password: hashedPassword, country, name, dob }])
       .execute()
+    return {
+      message: USERS_MESSAGES.REGISTER_SUCCESS
+    }
 
-    const [access_token, refresh_token] = await this.signAccessAndRefreshToken({
-      id: newUserId.toString(),
-      email: email,
-      verify: UserVerifyStatus.Verrified
-    })
-
-    await dataSource
-      .createQueryBuilder()
-      .insert()
-      .into(RefreshToken)
-      .values([{ userId: newUserId, token: refresh_token }])
-      .execute()
-
-    return { access_token, refresh_token }
   }
   async logout(refresh_token: string, userId: string) {
     const result = await dataSource
