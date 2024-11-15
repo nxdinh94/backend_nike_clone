@@ -1,6 +1,7 @@
 import { TokenType, UserVerifyStatus } from '~/constants/enum'
 import { USERS_MESSAGES } from '~/constants/messages'
 import { dataSource } from '~/dataSource'
+import { IsFavorite } from '~/models/entity/isFavorite'
 import { RefreshToken } from '~/models/entity/refreshToken'
 import { Users } from '~/models/entity/users'
 import { hashPassword } from '~/util/crypto'
@@ -59,9 +60,23 @@ class UserServices {
       .values([{ token: refresh_token, user: user }])
       .execute()
 
+    console.log(access_token)
+
     return { access_token, refresh_token }
   }
-  async registerService({ email, password, country, name, dob }: { email: string; password: string; country: string, name:string, dob: string }) {
+  async registerService({
+    email,
+    password,
+    country,
+    name,
+    dob
+  }: {
+    email: string
+    password: string
+    country: string
+    name: string
+    dob: string
+  }) {
     const firstUser = await dataSource
       .getRepository(Users)
       .createQueryBuilder('users')
@@ -83,7 +98,6 @@ class UserServices {
     return {
       message: USERS_MESSAGES.REGISTER_SUCCESS
     }
-
   }
   async logout(refresh_token: string, userId: string) {
     const result = await dataSource
@@ -97,6 +111,39 @@ class UserServices {
     return {
       message: USERS_MESSAGES.LOGOUT_SUCCESS
     }
+  }
+  async getMeService(id: string) {
+    const user = await dataSource
+      .getRepository(Users)
+      .createQueryBuilder('user')
+      .where('user.id = :id', { id })
+      .getOne()
+    return user
+  }
+  async favoriteService(userId: string, productId: string) {
+    const isFavorited = await dataSource
+      .getRepository(IsFavorite)
+      .createQueryBuilder('isFavorite')
+      .where('isFavorite.user= :userId', {userId})
+      .andWhere('isFavorite.product = :productId', {productId})
+      .getOne()
+    if(!isFavorited){
+      await dataSource
+      .createQueryBuilder()
+      .insert()
+      .into(IsFavorite)
+      .values([{ product: productId, user: userId }])
+      .execute()
+    }else {
+      await dataSource
+      .createQueryBuilder()
+      .delete()
+      .from(IsFavorite)
+      .where('user= :userId', {userId})
+      .andWhere('product = :productId', {productId})
+      .execute()
+    }
+    return;
   }
 }
 const userServices = new UserServices()

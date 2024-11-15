@@ -20,3 +20,7 @@ export interface TokenPayload extends JwtPayload {
   userName: string
   tokenType: TokenType
 }
+
+export interface FavoriteParams{
+  product_id: string
+}

@@ -1,12 +1,8 @@
 import { NextFunction, Request, Response } from 'express'
 import { ParamsDictionary } from 'express-serve-static-core'
-import { omit } from 'lodash'
-import { USERS_MESSAGES } from '~/constants/messages'
 import { Users } from '~/models/entity/users'
-import { LoginReqBody, LogoutReqBody, RegisterReqBody } from '~/requests/Users.requests'
+import {  LoginReqBody, LogoutReqBody, RegisterReqBody } from '~/requests/Users.requests'
 import userServices from '~/services/users.services'
-import { hashPassword } from '~/util/crypto'
-import { formatName } from '~/util/formatName'
 
 export const loginController = async (
   req: Request<ParamsDictionary, any, LoginReqBody>,
@@ -48,4 +44,21 @@ export const logoutController = async (
 
   const result = await userServices.logout(refreshToken, id)
   return res.json(result)
+}
+export const getMeController = async (
+  req: Request<ParamsDictionary, any, any>,
+  res: Response
+)=>{
+  const {id} = req.decoded_authorization 
+  const user = await userServices.getMeService(id.toString())
+  return res.json(user)
+} 
+export const favoriteController = async (
+  req: Request<{product_id: string}, any, any, any>,
+  res: Response,
+)=>{
+  const {id} = req.decoded_authorization
+  const result = await userServices.favoriteService(id, req.params.product_id)
+
+  return res.json('Changed option successfully');
 }

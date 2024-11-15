@@ -4,7 +4,7 @@ import { OrderDetail } from './orderDetail'
 import { CreatedUpdated } from '~/common/entity/createdUpdated'
 
 @Entity()
-export class Discount extends CreatedUpdated{
+export class Discount extends CreatedUpdated {
   @PrimaryGeneratedColumn()
   id?: number
 
@@ -14,6 +14,6 @@ export class Discount extends CreatedUpdated{
   @Column({ type: 'float' })
   discountPercentage?: number
 
-  @OneToMany(() => OrderDetail, (orderDetail) => orderDetail.discountId)
+  @OneToMany(() => OrderDetail, (orderDetail) => orderDetail.discount)
   orderDetailId?: OrderDetail[]
 }

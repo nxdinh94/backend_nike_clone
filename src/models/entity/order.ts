@@ -14,13 +14,14 @@ export class Orders extends CreatedUpdated{
   total?: number
 
   @OneToMany(() => OrderDetail, (orderDetail) => orderDetail.orderId)
-  orderDetailId?: string
+  @Column({name: 'orderDetailId'})
+  orderDetail?: string
 
-  @ManyToOne(() => Users, (user) => user.orderId)
+  @ManyToOne(() => Users, (user) => user.order)
   @JoinColumn({ name: 'userId' })
-  userId?: number
+  user?: number
 
   @OneToOne(() => Payment)
   @JoinColumn({ name: 'paymentId' })
-  paymentId?: number
+  payment?: number
 }

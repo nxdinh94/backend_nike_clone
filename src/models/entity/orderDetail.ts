@@ -5,23 +5,22 @@ import { Orders } from './order'
 import { CreatedUpdated } from '~/common/entity/createdUpdated'
 
 @Entity()
-export class OrderDetail extends CreatedUpdated{
+export class OrderDetail extends CreatedUpdated {
   @PrimaryGeneratedColumn()
   id?: number
 
-  @ManyToOne(()=> Orders, (orders)=>orders.orderDetailId )
-  @JoinColumn({name:'orderId'})
+  @ManyToOne(() => Orders, (orders) => orders.orderDetail)
+  @JoinColumn({ name: 'orderId' })
   orderId?: number
 
   @Column()
   unit_price?: number
-  
-  @ManyToOne(() => Products, (product) => product.orderDetailId)
+
+  @ManyToOne(() => Products, (product) => product.orderDetail)
   @JoinColumn({ name: 'productId' })
-  productId?: Products
+  product?: Products
 
   @ManyToOne(() => Discount, (discount) => discount.orderDetailId)
   @JoinColumn({ name: 'discountId' })
-  discountId?: Discount
-
+  discount?: Discount
 }

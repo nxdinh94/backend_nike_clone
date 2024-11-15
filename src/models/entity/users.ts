@@ -3,6 +3,7 @@ import { CartItems } from './cartItem'
 import { Orders } from './order'
 import { CreatedUpdated } from '~/common/entity/createdUpdated'
 import { Reviews } from './reviews'
+import { IsFavorite } from './isFavorite'
 
 @Entity()
 export class Users extends CreatedUpdated {
@@ -15,7 +16,7 @@ export class Users extends CreatedUpdated {
   @Column({ nullable: false, unique: true })
   email?: string
 
-  @Column({ nullable: false })
+  @Column({ nullable: false, select: false })
   password?: string
 
   @Column({ nullable: true, default: 0 })
@@ -31,17 +32,20 @@ export class Users extends CreatedUpdated {
   country?: string
 
   @Column({ nullable: true, length: 255, default: null })
-  shiping_address?: string
+  shipAddress?: string
 
   @Column({ nullable: true, length: 255, default: null })
-  payment_info?: string
+  paymentInfo?: string
 
   @Column({ nullable: true, default: 'English', length: 50 })
   language?: string
 
-  @OneToMany(() => Orders, (orders) => orders.userId)
-  orderId?: Orders[]
+  @OneToMany(() => Orders, (orders) => orders.user)
+  order?: Orders[]
 
-  @OneToMany(() => Reviews, (review) => review.userId)
-  reviewId?: Reviews[]
+  @OneToMany(() => Reviews, (review) => review.user)
+  review?: Reviews[]
+  
+  @OneToMany(()=> IsFavorite, (isFavorite)=> isFavorite.user)
+  isFavorite?: IsFavorite[] 
 }

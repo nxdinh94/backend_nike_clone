@@ -10,6 +10,7 @@ import { Color } from './color'
 import { Collections } from './collection'
 import { ProductImages } from './product_images'
 import { Brand } from './brand'
+import { IsFavorite } from './isFavorite'
 
 @Entity()
 export class Products extends CreatedUpdated {
@@ -24,11 +25,6 @@ export class Products extends CreatedUpdated {
 
   @Column({ type: 'float' })
   price?: number
-
-  @Column({ type: 'boolean', nullable: true, default: false })
-  isFavourite?: boolean
-
-
 
   @Column('text', { array: true, nullable: true })
   howItMade?: string[]
@@ -60,8 +56,8 @@ export class Products extends CreatedUpdated {
   @OneToMany(() => CartItems, (cartItems) => cartItems.productId)
   cartItem?: CartItems[]
 
-  @OneToMany(() => OrderDetail, (orderDetail) => orderDetail.productId)
-  orderDetailId?: OrderDetail[]
+  @OneToMany(() => OrderDetail, (orderDetail) => orderDetail.product)
+  orderDetail?: OrderDetail[]
 
   @ManyToOne(() => Color, (color) => color.product)
   @JoinColumn({ name: 'colorId' })
@@ -90,6 +86,9 @@ export class Products extends CreatedUpdated {
   @OneToMany(() => ProductSize, (productSize) => productSize.productId)
   productSizeId?: ProductSize[]
 
-  @OneToMany(() => Reviews, (review) => review.productId)
+  @OneToMany(() => Reviews, (review) => review.product)
   reviewId?: Reviews[]
+
+  @OneToMany(()=> IsFavorite, (isFavorite)=> isFavorite.product)
+  isFavorite?: IsFavorite[] 
 }

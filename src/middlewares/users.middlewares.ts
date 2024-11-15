@@ -1,4 +1,5 @@
-import { body, check, matchedData } from 'express-validator'
+import { favoriteController } from '~/controllers/users.controllers'
+import { body, check, matchedData, param } from 'express-validator'
 import { Request, Response } from 'express'
 import { validate } from '~/util/validate'
 import { verifyToken } from '~/util/jwt'
@@ -9,6 +10,7 @@ import { dataSource } from '~/dataSource'
 import { Users } from '~/models/entity/users'
 import { RefreshToken } from '~/models/entity/refreshToken'
 import { hashPassword } from '~/util/crypto'
+import { Products } from '~/models/entity/products'
 
 export const loginValidator = validate([
   body('email').notEmpty().withMessage(USERS_MESSAGES.EMAIL_IS_REQUIRED),
@@ -70,7 +72,6 @@ export const accessTokenValidator = validate([
     .exists()
     .withMessage('Authorization header is required')
     .custom(async (value, { req }) => {
-      console.log('access', value)
       // Split the Authorization header and check if it starts with "Bearer"
       if (!value || !value.startsWith('Bearer ')) {
         throw new Error('Invalid authorization format. Must use Bearer token.')
@@ -118,4 +119,24 @@ export const refreshTokenValidator = validate([
     ;(req as Request).decoded_refresh_token = decoded_refresh_token
     return true
   })
+])
+
+export const favoriteValidator = validate([
+  param('product_id')
+    .notEmpty()
+    .withMessage('Product not found')
+    .custom(async (id) => {
+      const firstProduct = await dataSource
+        .getRepository(Products)
+        .createQueryBuilder('product')
+        .where('product.id = :id', { id })
+        .getOne()
+
+      if (!firstProduct) {
+        throw new ErrorWithStatus({ message: 'Product not found', status: HTTP_STATUS.NOT_FOUND })
+      }
+
+    
+      return true
+    })
 ])

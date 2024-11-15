@@ -1,9 +1,19 @@
 import express from 'express'
-import { loginController, logoutController, registerController } from '~/controllers/users.controllers'
-import { accessTokenValidator, loginValidator, refreshTokenValidator } from '../middlewares/users.middlewares'
+import {
+  favoriteController,
+  getMeController,
+  loginController,
+  logoutController,
+  registerController
+} from '~/controllers/users.controllers'
+import {
+  accessTokenValidator,
+  favoriteValidator,
+  loginValidator,
+  refreshTokenValidator
+} from '../middlewares/users.middlewares'
 import { registerValidator } from './../middlewares/users.middlewares'
 import { wrapRequestHandler } from './../util/handler'
-import { body } from 'express-validator'
 
 const usersRouters = express.Router()
 
@@ -31,5 +41,21 @@ usersRouters.post('/register', registerValidator, wrapRequestHandler(registerCon
     Body: {refresh_token: string}
 */
 usersRouters.post('/logout', refreshTokenValidator, accessTokenValidator, wrapRequestHandler(logoutController))
+
+usersRouters.get('/me', accessTokenValidator, wrapRequestHandler(getMeController))
+
+/*
+    Description: add or remove favorite products 
+    Header: Bearer token 
+    Path: users/favorite
+    Method: POST,
+    Params: {product_id: string}
+*/
+usersRouters.post(
+  '/favorite/:product_id',
+  accessTokenValidator,
+  favoriteValidator,
+  wrapRequestHandler(favoriteController)
+)
 
 export default usersRouters

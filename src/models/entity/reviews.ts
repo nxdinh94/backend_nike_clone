@@ -14,11 +14,11 @@ export class Reviews extends CreatedUpdated {
   @Column()
   quantity?: number
 
-  @ManyToOne(()=> Users, (user)=> user.reviewId)
+  @ManyToOne(()=> Users, (user)=> user.review)
   @JoinColumn({name: 'userId'})
-  userId?: number
+  user?: number
 
   @ManyToOne(()=> Products, (product)=> product.reviewId)
   @JoinColumn({ name: 'productId' })
-  productId?: number
+  product?: number
 }
